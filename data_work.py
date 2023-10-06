@@ -11,14 +11,14 @@ conn = psycopg2.connect(
 try:
     with conn:
         with conn.cursor() as cur:
-            with open('vacancy.json', 'r') as file:
+            with open('vacancy.json', 'r', encoding="utf-8") as file:
                 vacancy_data = json.load(file)
                 query = 'insert into vacancy values (%s, %s, %s, %s, %s)'
                 for data in vacancy_data:
                     data_line = data['id_vacancy'], data['vacancy_name'], data['salalry'], data['link'], data['id_company']
                     cur.execute(query, (tuple(data_line)))
 
-            with open('employer.json', 'r') as file:
+            with open('employer.json', 'r', encoding="utf-8") as file:
                 employer_data = json.load(file)
                 query = 'insert into employer values (%s, %s)'
                 for data in employer_data:

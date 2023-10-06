@@ -49,5 +49,5 @@ for vacancy in vacant['items']:
 with open("vacancy.json", 'w',encoding="utf-8") as outfile:
     json.dump(result, outfile, ensure_ascii=False, indent=6 )
 
-with open("epmloyer.json", 'w',encoding="utf-8") as outfile:
+with open("employer.json", 'w',encoding="utf-8") as outfile:
     json.dump(temp, outfile, ensure_ascii=False, indent=6)
