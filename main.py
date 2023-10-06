@@ -9,9 +9,11 @@ params = {
 req = requests.get('https://api.hh.ru/vacancies/', params=params)
 data = req.content.decode()
 vacant = json.loads(data)
-print(vacant)
+#print(vacant)
 
 result = []
+temp = []
+
 for vacancy in vacant['items']:
     name = vacancy['name']
     employer = vacancy['employer']['name']
@@ -30,6 +32,22 @@ for vacancy in vacant['items']:
                   'link':url
     }
     result.append(dictionary)
-with open("vacancy.json", 'w') as outfile:
-    json.dump(result, outfile, ensure_ascii=False, indent=6)
 
+    dictionary_emp = {'id_company': employer_id,
+                  'company_name': employer,
+    }
+    if dictionary_emp not in temp:
+        print(dictionary_emp['id_company'])
+        print(temp)
+        temp.append(dictionary_emp)
+    else:
+        continue
+
+
+
+
+with open("vacancy.json", 'w',encoding="utf-8") as outfile:
+    json.dump(result, outfile, ensure_ascii=False, indent=6 )
+
+with open("epmloyer.json", 'w',encoding="utf-8") as outfile:
+    json.dump(temp, outfile, ensure_ascii=False, indent=6)

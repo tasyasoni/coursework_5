@@ -1,6 +1,5 @@
 """Скрипт для заполнения данными таблиц в БД Postgres."""
 import json
-
 import psycopg2
 
 conn = psycopg2.connect(
@@ -19,12 +18,10 @@ try:
                     data_line = data['id_vacancy'], data['vacancy_name'], data['salalry'], data['link'], data['id_company']
                     cur.execute(query, (tuple(data_line)))
 
-            with open('vacancy.json', 'r') as file:
+            with open('employer.json', 'r') as file:
                 employer_data = json.load(file)
-                print (employer_data)
-                test_emplouer = list(set(employer_data))
                 query = 'insert into employer values (%s, %s)'
-                for data in test_emplouer:
+                for data in employer_data:
                     data_line = data['id_company'], data['company_name']
                     cur.execute(query, (tuple(data_line)))
 finally:
