@@ -23,7 +23,12 @@ class Api_work:
             else:
                 salary = vacancy['salary']['from']
             url = vacancy['alternate_url']
-            employer_id = vacancy['employer']['id']
+            try:
+                employer_id = vacancy['employer']['id']
+            except KeyError:
+                continue
+            else:
+                employer_id = vacancy['employer']['id']
             id_vacancy = vacancy['id']
             dictionary_vac = {'id_company': employer_id,
                               'id_vacancy': id_vacancy,
@@ -39,13 +44,18 @@ class Api_work:
         emp_dict = []
         for vacancy in vacant['items']:
             employer = vacancy['employer']['name']
-            employer_id = vacancy['employer']['id']
+            try:
+                employer_id = vacancy['employer']['id']
+            except KeyError:
+                continue
+            else:
+              employer_id = vacancy['employer']['id']
             dictionary_emp = {'id_company': employer_id,
                               'company_name': employer,
             }
             if dictionary_emp not in emp_dict:
-                print(dictionary_emp['id_company'])
-                print(emp_dict)
+                # print(dictionary_emp['id_company'])
+                 # print(emp_dict)
                 emp_dict.append(dictionary_emp)
             else:
                 continue
@@ -54,21 +64,27 @@ class Api_work:
 
 class Data_file:
 
-    def vacancy_file_create(self, vac_dict):
+
+    @staticmethod
+    def vacancy_file_create(vac_dict):
         with open("vacancy.json", 'w',encoding="utf-8") as outfile:
             json.dump(vac_dict, outfile, ensure_ascii=False, indent=6 )
 
 
-    def employer_file_create(self,emp_dict ):
+    @staticmethod
+    def employer_file_create(emp_dict):
         with open("employer.json", 'w',encoding="utf-8") as outfile:
             json.dump(emp_dict, outfile, ensure_ascii=False, indent=6)
 
 
+    @staticmethod
     def vacancy_file_clear (self):
         with open('vacancy.json', "w", encoding='utf-8') as outfile:
             content = []
             json.dump(content, outfile)
 
+
+    @staticmethod
     def employer_file_clear(self):
         with open('employer.json', "w", encoding='utf-8') as outfile:
             content = []

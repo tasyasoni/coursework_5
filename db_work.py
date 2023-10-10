@@ -44,10 +44,11 @@ class DBManager:
                 with self.conn.cursor() as cur:
                     cur.execute('select employer.company_name, count (*) from vacancy inner join employer using (id_company) group by employer.company_name')
                     list_company = cur.fetchall()
-                    for data in list_company:
-                        for i in data:
-                            print(i, ' ', end="")
-                        print('\n')
+                return list_company
+                    # for data in list_company:
+                    #     for i in data:
+                    #         print(i, ' ', end="")
+                    #     print('\n')
         finally:
             self.conn.close()
 
@@ -57,10 +58,11 @@ class DBManager:
                 with self.conn.cursor() as cur:
                     cur.execute('select employer.company_name, vacancy_name, salary, link_hh from vacancy inner join employer using (id_company)')
                     list_company = cur.fetchall()
-                    for data in list_company:
-                        for i in data:
-                            print(i, ' ', end="")
-                        print('\n')
+                return list_company
+                    # for data in list_company:
+                    #     for i in data:
+                    #         print(i, ' ', end="")
+                    #     print('\n')
         finally:
             self.conn.close()
 
@@ -71,9 +73,9 @@ class DBManager:
                 with self.conn.cursor() as cur:
                     cur.execute('select round (avg (salary)) from vacancy')
                     list_company = cur.fetchall()
-                    for data in list_company:
-                        print(data)
-                    print(f"Средняя зарплата в вакансиях по запросу {list_company}")
+                    # for data in list_company:
+                    #     print(data)
+                return (f"Средняя зарплата в вакансиях по запросу {list_company}")
         finally:
             self.conn.close()
 
@@ -83,18 +85,37 @@ class DBManager:
                 with self.conn.cursor() as cur:
                     cur.execute('select vacancy_name, salary from vacancy where salary > (select avg (salary) from vacancy) order by salary desc limit 10')
                     list_company = cur.fetchall()
-                    for data in list_company:
-                        print(data)
+                return list_company
+                    # for data in list_company:
+                    #     print(data)
         finally:
             self.conn.close()
 
-    def get_vacancies_with_keyword(self):
+    def get_vacancies_with_keyword(self, keyword):
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
-                    cur.execute("select * from vacancy where vacancy_name like ('%Менеджер%')")
+                    cur.execute(f"select * from vacancy where vacancy_name like ('%{keyword}%')")
                     list_company = cur.fetchall()
-                    for data in list_company:
-                        print(data)
+                    return list_company
+                    # for data in list_company:
+                    #     print(data)
+        finally:
+              self.conn.close()
+
+    def clear_db_of_vacancies (self):
+        try:
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    cur.execute("TRUNCATE TABLE vacancy")
+        finally:
+            self.conn.close()
+
+
+    def clear_db_of_epmloyer (self):
+        try:
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    cur.execute("TRUNCATE TABLE employer")
         finally:
               self.conn.close()
