@@ -12,7 +12,36 @@ class DBManager:
             password="Antoniya2308"
         )
 
+    def __call__(self):
+        pass
+
+
+    def create_db_of_vacancies(self):
+        """
+        Создает таблицу с вакансиями
+        """
+        try:
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    cur.execute("create table vacancy (id_vacancy varchar(50) primary key, vacancy_name text, salary int, link_hh text, id_company varchar(50));")
+        finally:
+            self.conn.close()
+
+    def create_db_of_epmloyers(self):
+        """
+        Создает таблицу с работодателями
+        """
+        try:
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    cur.execute("create table employer(id_company varchar(50) primary key, company_name text);")
+        finally:
+            self.conn.close()
     def filling_db_of_vacancies(self):
+        """
+        Заполняет таблицу с вакансиями
+        данными из файла
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
@@ -26,6 +55,10 @@ class DBManager:
             self.conn.close()
 
     def filling_db_of_employer(self):
+        """
+        Заполняет таблицу с работодателями
+        данными из файла
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
@@ -39,83 +72,100 @@ class DBManager:
         finally:
             self.conn.close()
     def get_companies_and_vacancies_count(self):
+        """
+        Считает вакансии по компаниям
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
                     cur.execute('select employer.company_name, count (*) from vacancy inner join employer using (id_company) group by employer.company_name')
                     list_company = cur.fetchall()
-                return list_company
-                    # for data in list_company:
-                    #     for i in data:
-                    #         print(i, ' ', end="")
-                    #     print('\n')
+                    for data in list_company:
+                        print(data)
         finally:
             self.conn.close()
 
+
     def get_all_vacancies(self):
+        """
+        Выводит все вакансии
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
                     cur.execute('select employer.company_name, vacancy_name, salary, link_hh from vacancy inner join employer using (id_company)')
                     list_company = cur.fetchall()
-                return list_company
-                    # for data in list_company:
-                    #     for i in data:
-                    #         print(i, ' ', end="")
-                    #     print('\n')
+                    for data in list_company:
+                        print(data)
         finally:
             self.conn.close()
 
 
     def get_avg_salary(self):
+        """
+        Получает среднюю зарплату по вакансиям
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
                     cur.execute('select round (avg (salary)) from vacancy')
                     list_company = cur.fetchall()
-                    # for data in list_company:
-                    #     print(data)
-                return (f"Средняя зарплата в вакансиях по запросу {list_company}")
+                    for data in list_company:
+                        for i in data:
+                            print(f"Средняя зарплата в вакансиях по запросу {i}")
         finally:
             self.conn.close()
 
     def get_vacancies_with_higher_salary(self):
+        """
+        Выводит 10 вакансий с максимальной зарплатой
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
                     cur.execute('select vacancy_name, salary from vacancy where salary > (select avg (salary) from vacancy) order by salary desc limit 10')
                     list_company = cur.fetchall()
-                return list_company
-                    # for data in list_company:
-                    #     print(data)
+                    for data in list_company:
+                        print(data)
         finally:
             self.conn.close()
 
     def get_vacancies_with_keyword(self, keyword):
+        """
+        Выводит вакансии по ключевому запросу
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
                     cur.execute(f"select * from vacancy where vacancy_name like ('%{keyword}%')")
                     list_company = cur.fetchall()
-                    return list_company
-                    # for data in list_company:
-                    #     print(data)
+                    if len(list_company) == 0:
+                        print("Нет вакансий по вашему запросу")
+                    else:
+                        for data in list_company:
+                            print(data)
         finally:
               self.conn.close()
 
-    def clear_db_of_vacancies (self):
+    def delete_db_of_vacancies(self):
+        """
+        Удаляет таблицу с вакансиями
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
-                    cur.execute("TRUNCATE TABLE vacancy")
+                    cur.execute("DROP TABLE vacancy")
         finally:
             self.conn.close()
 
 
-    def clear_db_of_epmloyer (self):
+    def delete_db_of_epmloyer(self):
+        """
+        Удаляет таблицу с компаниями
+        """
         try:
             with self.conn:
                 with self.conn.cursor() as cur:
-                    cur.execute("TRUNCATE TABLE employer")
+                    cur.execute("DROP TABLE employer")
         finally:
               self.conn.close()
